@@ -20,6 +20,12 @@ https://cloud.baidu.com/doc/IMAGEPROCESS/s/Nk3bclmag
 
 具体效果见：
 
+before:
+![origin](readme_image/origin_target.jpg)
+
+enhanced:
+![enhanced](readme_image/enhanced.png)
+
 马礼堂养气功 VCD
 
 TODO 修复后把内容传到B站上
