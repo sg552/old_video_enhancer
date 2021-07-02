@@ -70,3 +70,5 @@ db/schema.rb
 *.rdb
 config/application.rb
 *.dat
+*.png
+*.mp3
