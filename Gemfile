@@ -3,3 +3,4 @@ ruby '2.5.8'
 
 gem 'figaro'
 gem 'httparty'
+gem 'log4r'
