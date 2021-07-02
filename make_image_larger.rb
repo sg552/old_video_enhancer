@@ -7,30 +7,52 @@ require 'json'
 让图片无损放大
 '''
 
-#request_url = "https://aip.baidubce.com/rest/2.0/image-process/v1/image_definition_enhance"
-request_url = "https://aip.baidubce.com/rest/2.0/image-process/v1/contrast_enhance"
+access_token = '24.5499bd61ab43a9784f9cdb9d392b038d.2592000.1627798482.282335-24469596'
+
+request_url = "https://aip.baidubce.com/rest/2.0/image-process/v1/image_quality_enhance"
+
+origin_image_folder = 'tmp_origin_image_folder'
+enlarged_image_folder = 'tmp_enlarged_image_folder'
 
 # 二进制方式打开图片文件
-f = File.read('/home/siwei/Documents/temp_mlt.jpg')
-img = Base64.encode64(f)
+Dir["#{origin_image_folder}/*.png"].sort.each do |origin_png|
 
-params = {"image":img}
-access_token = "24.0e4058344aa57901cba7f28e57d08031.2592000.1627635217.282335-24469596"
-request_url = request_url + "?access_token=" + access_token
-headers = {'content-type': 'application/x-www-form-urlencoded'}
+  base_file_name = origin_png.gsub(origin_image_folder + '/', '')
+  index = base_file_name.gsub('vcd3-','').gsub('.png', '').to_i
+  if index < 300
+    puts "== index is: #{index}, <= 300, skip"
+    next
+  end
 
-options = {
-  body: { "image": img},
-  headers: headers,
-}
+  f = File.read(origin_png)
+  img = Base64.encode64(f)
 
-response = HTTParty.post(request_url, options)
+  params = {"image":img}
+  request_url = request_url + "?access_token=" + access_token
+  headers = {'content-type': 'application/x-www-form-urlencoded'}
 
-File.open('result_2.png', 'wb') do |f|
-  f.write(Base64.decode64(JSON.parse(response.body)['image']))
+  options = {
+    body: { "image": img},
+    headers: headers,
+  }
+
+  response = HTTParty.post(request_url, options)
+
+  new_file_name = "#{enlarged_image_folder}/#{base_file_name}"
+
+  puts "== processing : #{new_file_name}"
+  puts response.code
+  puts response.body if response.code >= 300
+
+  begin
+    File.open(new_file_name, 'wb') do |f|
+      f.write(Base64.decode64(JSON.parse(response.body)['image']))
+    end
+  rescue Exception => e
+    puts e
+    puts response.body
+  end
+
+  sleep 0.1
 end
-
-
-puts response.code
-puts JSON.parse(response.body)['log_id']
 
