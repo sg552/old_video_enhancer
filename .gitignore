@@ -69,3 +69,4 @@ db/schema.rb
 *.csv
 *.rdb
 config/application.rb
+*.dat
